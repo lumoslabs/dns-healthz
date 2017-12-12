@@ -1,0 +1,6 @@
+probes:
+  - name: google
+    address: 8.8.8.8
+    query: www.google.com,A
+    interval: 10s
+    timeout: 5s

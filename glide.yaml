@@ -1,0 +1,21 @@
+package: github.com/lumoslabs/dns-healthz
+import:
+- package: github.com/ghodss/yaml
+  version: ^1.0.0
+- package: github.com/golang/glog
+- package: github.com/labstack/echo
+  version: ^3.2.5
+  subpackages:
+  - middleware
+- package: github.com/labstack/gommon
+  version: ^0.2.3
+  subpackages:
+  - log
+- package: github.com/miekg/dns
+  version: ^1.0.0
+- package: gopkg.in/alecthomas/kingpin.v2
+  version: ^2.2.5
+- package: golang.org/x/net
+  subpackages:
+    - ipv6
+  version: 894f8ed5849b15b810ae41e9590a0d05395bba27
