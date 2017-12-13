@@ -21,18 +21,13 @@ import (
 var (
 	version = "0.1.0"
 
-	vmodDesc = `The syntax of the argument is a comma-separated list of pattern=N,
-	where pattern is a literal file name (minus the ".go" suffix) or
-	"glob" pattern and N is a V level. For instance, -vmodule=gopher*=3
-	sets the V level to 3 in all Go files whose names begin "gopher".`
-
 	app    = kingpin.New("dns-healthz", "A DNS healthz server.").DefaultEnvars()
 	config = app.Flag("config", "Path to config file.").Short('C').ExistingFile()
 	vlog   = app.Flag("v", "Enable V-leveled logging at the specified level.").Default("0").Int()
-	vmod   = app.Flag("vmodule", vmodDesc).Default("").String()
+	vmod   = app.Flag("vmodule", "glog vmodule settings.").Default("").String()
 	probes = app.Flag("probe", "DNS probe definition as json string").Strings()
 	prefix = app.Flag("route-prefix", "Route prefix. Routes will be constructed as /<prefix>/<probe name>.").Default("healthz").String()
-	listen = app.Flag("listen", "Listen address").Short('l').Default(":8080").String()
+	listen = app.Flag("listen", "Listen address.").Short('l').Default(":8080").String()
 	grace  = app.Flag("grace-timeout", "Graceful shutdown timeout.").Default("30s").Duration()
 )
 
@@ -71,9 +66,11 @@ func main() {
 
 	e := echo.New()
 	e.HideBanner = true
-	// Middleware
+
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
+	e.Use(middleware.Gzip())
+	e.Logger.SetOutput(os.Stderr)
 	e.Logger.SetLevel(log.Lvl(*vlog))
 
 	route := fmt.Sprintf(`/%s/:probe`, *prefix)
